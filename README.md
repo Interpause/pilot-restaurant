@@ -2,7 +2,7 @@
 
 ## Description
 
-Attempting to do my sister's project in a day or so
+Attempting to do my sister's project in a day or so. Choices made in initial setup reflects the fastest way of doing things my pride will let me, and this project can essentially be cloned whenever I need to speedrun creating a site in the future.
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
