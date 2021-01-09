@@ -187,23 +187,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@material-ui/icons@npm:^4.11.2":
-  version: 4.11.2
-  resolution: "@material-ui/icons@npm:4.11.2"
-  dependencies:
-    "@babel/runtime": ^7.4.4
-  peerDependencies:
-    "@material-ui/core": ^4.0.0
-    "@types/react": ^16.8.6 || ^17.0.0
-    react: ^16.8.0 || ^17.0.0
-    react-dom: ^16.8.0 || ^17.0.0
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 0f5f70d10581e50e96dadf4d7cd5ef2acdc135e460a74eb29fdeecd5fd98fb1caae9692979997438a9606c193b52b6e0186cabf57af1352fa92221b7eb71ea83
-  languageName: node
-  linkType: hard
-
 "@material-ui/styles@npm:^4.11.2":
   version: 4.11.2
   resolution: "@material-ui/styles@npm:4.11.2"
@@ -1726,7 +1709,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clsx@npm:^1.0.4":
+"clsx@npm:^1.0.4, clsx@npm:^1.1.1":
   version: 1.1.1
   resolution: "clsx@npm:1.1.1"
   checksum: d8ae10ac0546da19fe8c9516886f6582a64a382cf4d09ea7d36d5287cafbdab1192ab249adc2cdf0310e0b0aeac4f4142cf7c738c98d9cb68c19ba24b6f673d5
@@ -3088,7 +3071,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"globby@npm:^11.0.1":
+"globby@npm:^11.0.1, globby@npm:^11.0.2":
   version: 11.0.2
   resolution: "globby@npm:11.0.2"
   dependencies:
@@ -4963,10 +4946,11 @@ fsevents@~2.3.1:
   resolution: "pilot-restaurant@workspace:."
   dependencies:
     "@material-ui/core": ^4.11.2
-    "@material-ui/icons": ^4.11.2
     "@types/node": ^14.14.20
     "@types/react": ^17.0.0
     "@yarnpkg/pnpify": ^2.4.0
+    clsx: ^1.1.1
+    globby: ^11.0.2
     next: 10.0.5
     react: 17.0.1
     react-dom: 17.0.1
