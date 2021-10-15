@@ -1,42 +1,58 @@
-import React, { useRef, useState } from "react";
-import Head from "next/head";
-import { Box, Button, ButtonProps, Dialog, DialogContent, DialogProps, Divider, Grid, Icon, IconButton, InputAdornment, makeStyles, OutlinedInput, TextField, Typography } from "@material-ui/core";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+import { Box, Button, ButtonProps, Dialog, DialogContent, DialogProps, Divider, FormHelperText, Grid, Icon, IconButton, InputAdornment, makeStyles, OutlinedInput, TextField, Typography } from "@material-ui/core";
 import Link from "./Link";
+import { signIn, useSession, SessionProvider } from "next-auth/client";
+import axios from "axios";
 
 const useDialogStyles = makeStyles((theme) => ({
-	registerLink: {
-		position:"absolute",
-		bottom:0,
-		paddingBottom:theme.spacing(1)
-	},
-	margin: {
-		margin: `${theme.spacing(2)}px 0px`
+	form: {
+		height:"100%",
+		overflow:"hidden",
+		"&>*":{
+			margin: `${theme.spacing(2)}px 0px`,
+		}
 	}
 }));
 
+const DialogContext = createContext(()=>console.error("DialogClose function not provided!"));
+
 //<div className="g-signin2" data-onsuccess="onSignIn"></div>
 export function LoginRight(){
+	const closeDialog = useContext(DialogContext);
 	const styles = useDialogStyles();
-	return <>
+	const [ providers, setProviders ] = useState<{}>();
+	useEffect(() => {
+		(async ()=> {
+			const { data } = await axios.get("/api/auth/providers");
+			setProviders(data);
+		})();
+	});
+	return <Box display="flex" flexDirection="column" className={styles.form}>
 		<Typography variant="h4" component="h2">Sign in with</Typography>
-		<Box display="flex" flexDirection="column" className={styles.margin}>
-		</Box>
-	</>;
+		{Object.values(providers).map(provider => (
+        <div key={provider.name}>
+          <button onClick={() => signIn(provider.id)}>Sign in with {provider.name}</button>
+        </div>
+    ))}
+		<Box flexGrow={1}/>
+		<Link href="/user/register" variant="body1" onClick={closeDialog}>Or register here!</Link>
+	</Box>;
 }
 
-export function LoginLeft({closeDialog}:{closeDialog:()=>void}){
+export function LoginLeft(){
+	const closeDialog = useContext(DialogContext);
 	const styles = useDialogStyles();
 	const [showPassword, setShowPassword] = useState(false);
 	let formRef = useRef<HTMLFormElement>(null);
 	const onSubmit = () => {
 		if(formRef.current==null) return console.error("form element missing");
 		let data = Object.fromEntries(new FormData(formRef.current).entries());
-		console.log(data);
+		signIn('credentials', data);
 	};
-	return <form ref={formRef}>
+	return <form ref={formRef} className={styles.form}>
 		<Typography variant="h4" component="h2">Login</Typography>
-		<TextField autoFocus required name="username" label="Username" className={styles.margin} fullWidth />
-		<TextField required	name="test"	label="Password" className={styles.margin} type={showPassword?"text":"password"} fullWidth
+		<TextField required name="username" label="Username" fullWidth />
+		<TextField required	name="password"	label="Password" type={showPassword?"text":"password"} fullWidth
 			InputProps={{endAdornment:
 				<InputAdornment position="end">
 					<IconButton onClick={()=>setShowPassword(!showPassword)} edge="end">
@@ -51,17 +67,15 @@ export function LoginLeft({closeDialog}:{closeDialog:()=>void}){
 }
 
 export function LoginDialog(props:DialogProps){
-	const styles = useDialogStyles();
 	return <Dialog {...props}>
 		<DialogContent>
 			<Grid container justify="space-between">
 				<Grid item xs={12} md={5}>
-					<LoginLeft closeDialog={props.onClose as ()=>void}/>
+					<LoginLeft/>
 				</Grid>
 				<Divider orientation="vertical" flexItem/>
 				<Grid item xs={12} md={5}>
 					<LoginRight/>
-					<Link className={styles.registerLink} href="/user/register" variant="body1" onClick={props.onClose as ()=>void}>Or register here!</Link>
 				</Grid>
 			</Grid>
 		</DialogContent>
@@ -69,14 +83,14 @@ export function LoginDialog(props:DialogProps){
 }
 
 export function LoginButton(props:ButtonProps){
+	const [ session, ] = useSession();
 	const [isOpen, setOpen] = useState(false);
 	const closeDialog = ()=>setOpen(false);
+	if(session) return <></>;
 	return <>
-		<Head>
-			<script src="https://apis.google.com/js/platform.js" async defer/>
-			<meta name="google-signin-client_id" content="248503963505-il6uahot07l6ivinibh2ecmb73n3qafi.apps.googleusercontent.com"/>
-		</Head>
 		<Button variant="contained" color="secondary" {...props} onClick={()=>setOpen(true)}>Login</Button>
-		<LoginDialog open={isOpen} onClose={closeDialog} maxWidth="md" fullWidth/>
+		<DialogContext.Provider value={closeDialog}>
+			<LoginDialog open={isOpen} onClose={closeDialog} maxWidth="md" fullWidth/>
+		</DialogContext.Provider>
 	</>;
 }

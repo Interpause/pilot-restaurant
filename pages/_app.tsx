@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from "react";
+import { Provider } from 'next-auth/client';
 import { AppProps } from "next/app";
 import Head from "next/head";
 
@@ -52,11 +53,13 @@ export default function App({ Component, pageProps }: AppProps) {
       {/* https://material-ui.com/customization/color/#official-color-tool */}
       {/* insert favicons here */}
     </Head>
+    <Provider session={pageProps.session}>
     <ThemeProvider theme={theme}>
       <CssBaseline/>
       <TopNav routes={routes}/>
       <Component {...pageProps}/>
       <BottomNav routes={routes}/>
     </ThemeProvider>
+    </Provider>
   </>;
 }

@@ -17,7 +17,6 @@ export interface RouteProps {
 }
 
 export interface NavProps {
-	/** relative URLs e.g. /login */
 	routes:RouteProps[]
 }
 
